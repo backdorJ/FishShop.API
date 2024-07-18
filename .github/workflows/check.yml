@@ -1,0 +1,31 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches:
+      - main  # Укажите нужную ветку
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'  # Или используйте другую доступную версию .NET
+
+      - name: Install dependencies
+        run: dotnet restore FishShop.API/FishShop.API.csproj
+
+      - name: Build
+        run: dotnet build FishShop.API/FishShop.API.csproj --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test FishShop.UnitTests/FishShop.UnitTests.csproj --no-restore --verbosity normal
